@@ -30,7 +30,14 @@ public class HotelReservationSystemTesting
 	}
 	
 	@Test
-	public void getHotelDetails_WhenWeekendsForRegular_ShoudReturn80()
+	public void getHotelDetails_WhenWeekendsForRegular_ShoudReturn90()
+	{
+		Hotel hotel = new Hotel("Lakewood",110 , 80, 90, 80);
+		assertEquals(90,hotel.getWeekendratesForRegular());
+	}
+
+	@Test
+	public void getHotelDetails_WhenWeekendsForReward_ShoudReturn80()
 	{
 		Hotel hotel = new Hotel("Lakewood",110 , 80, 90, 80);
 		assertEquals(80,hotel.getWeekendratesForRewards());
