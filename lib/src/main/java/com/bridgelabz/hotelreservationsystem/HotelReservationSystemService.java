@@ -17,7 +17,7 @@ public class HotelReservationSystemService
 		hotelsList.add(hotel);
 	}
 	
-	public List<Entry<String, Integer>> FindCheapestHotel(String startDate,String endDate) 
+	public List<Entry<String, Integer>> findCheapestHotel(String startDate,String endDate) 
 	{
 		LocalDate localStartDate = LocalDate.parse(startDate); 
 		LocalDate localEndDate = LocalDate.parse(endDate);
@@ -67,5 +67,11 @@ public class HotelReservationSystemService
 		{							
 			hotelPricesList.put(hotel.getHotelName(), rate); //here we added new hotel to list
 		}
+	}
+	
+	//method to set the rating of the hotel
+	public void ratingsOfHotel(Hotel hotel,int rating)
+	{
+		hotel.setRating(rating);
 	}
 }

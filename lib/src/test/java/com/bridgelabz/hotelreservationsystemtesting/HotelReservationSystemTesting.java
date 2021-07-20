@@ -2,6 +2,7 @@ package com.bridgelabz.hotelreservationsystemtesting;
 
 import static org.junit.Assert.assertEquals;
 
+
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -35,7 +36,7 @@ public class HotelReservationSystemTesting
 		hotelService.addHotel(hotel1);
 		hotelService.addHotel(hotel2);
 		hotelService.addHotel(hotel3);
-		List<Entry<String, Integer>> cheapestHotel =  hotelService.FindCheapestHotel("2021-07-23","2021-07-24");
+		List<Entry<String, Integer>> cheapestHotel =  hotelService.findCheapestHotel("2021-07-23","2021-07-24");
 		assertEquals("Lakewood", cheapestHotel.get(0).getKey());
 	}
 
@@ -49,7 +50,7 @@ public class HotelReservationSystemTesting
 		hotelService.addHotel(hotel1);
 		hotelService.addHotel(hotel2);
 		hotelService.addHotel(hotel3);
-		assertEquals(null,hotelService.FindCheapestHotel("2020-07-24","2020-07-25"));
+		assertEquals(null,hotelService.findCheapestHotel("2020-07-24","2020-07-25"));
 	}
 
 	@Test
@@ -75,8 +76,35 @@ public class HotelReservationSystemTesting
 		hotelService.addHotel(hotel1);
 		hotelService.addHotel(hotel2);
 		hotelService.addHotel(hotel3);
-		List<Entry<String, Integer>> cheapestHotel =  hotelService.FindCheapestHotel("2021-07-23","2021-07-24");
+		List<Entry<String, Integer>> cheapestHotel =  hotelService.findCheapestHotel("2021-07-23","2021-07-24");
 		assertEquals("Bridgewood",cheapestHotel.get(0).getKey() );
 		assertEquals("Lakewood",cheapestHotel.get(1).getKey() );
+	}
+	
+	@Test
+	public void setRatingOfHotel_WhenLakewood_ShouldReturn3() 
+	{
+		HotelReservationSystemService hotelService = new HotelReservationSystemService();
+		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+		Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 50, 50);
+		Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+		hotelService.addHotel(hotel1);
+		hotelService.addHotel(hotel2);
+		hotelService.addHotel(hotel3);
+		hotelService.ratingsOfHotel(hotel1, 3);
+		assertEquals(3, hotel1.getRating());
+	}
+
+	@Test
+	public void getRatingOfHotel_WhenNotSet_ShouldReturn0() 
+	{
+		HotelReservationSystemService hotelService = new HotelReservationSystemService();
+		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+		Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 50, 50);
+		Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+		hotelService.addHotel(hotel1);
+		hotelService.addHotel(hotel2);
+		hotelService.addHotel(hotel3);
+		assertEquals(0, hotel1.getRating());
 	}
 }
