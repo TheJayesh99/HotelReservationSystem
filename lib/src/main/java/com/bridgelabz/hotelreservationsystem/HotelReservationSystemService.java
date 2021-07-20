@@ -1,8 +1,11 @@
 package com.bridgelabz.hotelreservationsystem;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class HotelReservationSystemService 
 {
@@ -14,7 +17,7 @@ public class HotelReservationSystemService
 		hotelsList.add(hotel);
 	}
 	
-	public String FindCheapestHotel(String startDate,String endDate) 
+	public List<Entry<String, Integer>> FindCheapestHotel(String startDate,String endDate) 
 	{
 		LocalDate localStartDate = LocalDate.parse(startDate); 
 		LocalDate localEndDate = LocalDate.parse(endDate);
@@ -26,26 +29,43 @@ public class HotelReservationSystemService
 			{
 				for (Hotel hotel : hotelsList) 
 				{		
-					if (hotelPricesList.containsKey(hotel.getHotelName()))   //if hotel already exists then increment the hotel price
+					if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
 					{
-						int exsistingAmount =  hotelPricesList.get(hotel.getHotelName());
-						exsistingAmount += hotel.getWeekDaysRateForRegular(); 
-						hotelPricesList.put(hotel.getHotelName(), exsistingAmount);													
+						setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRegular()); //for weekend we will update weekend price
 					}
 					else
-					{							
-						hotelPricesList.put(hotel.getHotelName(), hotel.getWeekDaysRateForRegular());  //adding new hotel to the hotel price list if hotel not in list						
+					{						
+						setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRegular());  //for weekdays we will pass regular price 
 					}
+					
 				}
 				localStartDate=localStartDate.plusDays(1); //incrementing the days
 			}
 			
 			//finding the hotel with minimum price
-			return  hotelPricesList.entrySet().stream().min((entry1,entry2) -> entry1.getValue().compareTo(entry2.getValue())).get().getKey(); 
+			int minvalue = hotelPricesList.entrySet().stream().min((entry1,entry2) -> entry1.getValue().compareTo(entry2.getValue())).get().getValue();
+		    List<Entry<String, Integer>> minPricehotel = hotelPricesList.entrySet().stream().filter(price -> price.getValue().equals(minvalue)).collect(Collectors.toList());
+			return minPricehotel;
 		}
 		else
 		{
-			return "Invalid dates" ;
+			System.out.println("Invalid dates");
+			return null  ;
+		}
+	}
+
+	//method to update the hotels along with the prices  
+	private void setHotelsAndPrice(HashMap<String, Integer> hotelPricesList, Hotel hotel, int rate) 
+	{
+		if (hotelPricesList.containsKey(hotel.getHotelName())) // if hotel already exists then we will update the price 
+		{
+			int exsistingAmount =  hotelPricesList.get(hotel.getHotelName());
+			exsistingAmount += rate; 
+			hotelPricesList.put(hotel.getHotelName(), exsistingAmount);													
+		}
+		else
+		{							
+			hotelPricesList.put(hotel.getHotelName(), rate); //here we added new hotel to list
 		}
 	}
 }
