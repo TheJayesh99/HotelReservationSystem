@@ -5,8 +5,8 @@ public class Hotel
 	private String hotelName;
 	private int weekDaysRateForRegular ;
 	private int weekDaysRateForRewards ;
-	private int weekendratesForRegular;
-	private int weekendratesForRewards;
+	private int weekendRatesForRegular;
+	private int weekendRatesForRewards;
 	
 	public Hotel(String hotelName, int weekDaysRateForRegular, int weekDaysRateForRewards, int weekendratesForRegular,int weekendratesForRewards) 
 	{
@@ -14,8 +14,8 @@ public class Hotel
 		this.hotelName = hotelName;
 		this.weekDaysRateForRegular = weekDaysRateForRegular;
 		this.weekDaysRateForRewards = weekDaysRateForRewards;
-		this.weekendratesForRegular = weekendratesForRegular;
-		this.weekendratesForRewards = weekendratesForRewards;
+		this.weekendRatesForRegular = weekendratesForRegular;
+		this.weekendRatesForRewards = weekendratesForRewards;
 	}
 
 	public String getHotelName() 
@@ -48,24 +48,24 @@ public class Hotel
 		this.weekDaysRateForRewards = weekDaysRateForRewards;
 	}
 
-	public int getWeekendratesForRegular() 
+	public int getWeekendRatesForRegular() 
 	{
-		return weekendratesForRegular;
+		return weekendRatesForRegular;
 	}
 
-	public void setWeekendratesForRegular(int weekendratesForRegular) 
+	public void setWeekendRatesForRegular(int weekendratesForRegular) 
 	{
-		this.weekendratesForRegular = weekendratesForRegular;
+		this.weekendRatesForRegular = weekendratesForRegular;
 	}
 
-	public int getWeekendratesForRewards()
+	public int getWeekendRatesForRewards()
 	{
-		return weekendratesForRewards;
+		return weekendRatesForRewards;
 	}
 
-	public void setWeekendratesForRewards(int weekendratesForRewards) 
+	public void setWeekendRatesForRewards(int weekendRatesForRewards) 
 	{
-		this.weekendratesForRewards = weekendratesForRewards;
+		this.weekendRatesForRewards = weekendRatesForRewards;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class Hotel
 	{
 		return "Hotel [hotelName=" + hotelName + ", weekDaysRateForRegular=" + weekDaysRateForRegular
 				+ ", weekDaysRateForRewards=" + weekDaysRateForRewards + ", weekendratesForRegular="
-				+ weekendratesForRegular + ", weekendratesForRewards=" + weekendratesForRewards + "]";
+				+ weekendRatesForRegular + ", weekendratesForRewards=" + weekendRatesForRewards + "]";
 	}
 	
 	
