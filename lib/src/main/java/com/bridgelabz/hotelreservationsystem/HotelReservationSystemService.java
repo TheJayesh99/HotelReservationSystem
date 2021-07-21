@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.bridgelabz.hotelreservationsystem.HotelReservationSystemException.ExceptionType;
+
 public class HotelReservationSystemService 
 {
 	public List<Hotel> hotelsList = new ArrayList<Hotel>();
@@ -36,51 +38,62 @@ public class HotelReservationSystemService
 	}
 
 	//method to calculate hotels prices in given date range
-	private HashMap<String, Integer> calculateHotelPricesForDates(String startDate, String endDate,String CoustomerType) 
+	private HashMap<String, Integer> calculateHotelPricesForDates(String startDate, String endDate,String CoustomerType) throws HotelReservationSystemException
 	{
-		LocalDate localStartDate = LocalDate.parse(startDate); 
-		LocalDate localEndDate = LocalDate.parse(endDate);
 		HashMap<String,Integer> hotelPricesList = new HashMap<>(); //making a price list to have mapping with price and hotels
-		if (localStartDate.compareTo(localEndDate) <= 0 && localStartDate.compareTo(LocalDate.now()) >= 0)
-		{
-			while(localStartDate.compareTo(localEndDate) <= 0)
+		try {
+			if (startDate.isEmpty() || endDate.isEmpty()) 
 			{
-				for (Hotel hotel : hotelsList) 
-				{		
-					if (CoustomerType.toLowerCase().equals("reward"))
-					{
-						if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
-						{
-							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRewards()); //for weekend we will update weekend price
-						}
-						else
-						{						
-							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRewards());  //for weekdays we will pass regular price 
-						}
-					}
-					else
-					{
-						if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
-						{
-							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRegular()); //for weekend we will update weekend price
-						}
-						else
-						{						
-							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRegular());  //for weekdays we will pass regular price 
-						}
-
-					}
-
-				}
-				localStartDate=localStartDate.plusDays(1); //incrementing the days
+				throw new HotelReservationSystemException(ExceptionType.ENTERED_EMPTY,"Dates cannot be empty string");
 			}
+			LocalDate localStartDate = LocalDate.parse(startDate); 
+			LocalDate localEndDate = LocalDate.parse(endDate);	
+			if (localStartDate.compareTo(localEndDate) <= 0 && localStartDate.compareTo(LocalDate.now()) >= 0)
+			{
+				while(localStartDate.compareTo(localEndDate) <= 0)
+				{
+					for (Hotel hotel : hotelsList) 
+					{		
+						if (CoustomerType.toLowerCase().equals("reward"))
+						{
+							if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
+							{
+								setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRewards()); //for weekend we will update weekend price
+							}
+							else
+							{						
+								setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRewards());  //for weekdays we will pass regular price 
+							}
+						}
+						else
+						{
+							if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
+							{
+								setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRegular()); //for weekend we will update weekend price
+							}
+							else
+							{						
+								setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRegular());  //for weekdays we will pass regular price 
+							}
 
+						}
+
+					}
+					localStartDate=localStartDate.plusDays(1); //incrementing the days
+				}
+
+			}	
+			else
+			{
+				return null;
+			}
 		}
-		else
+		catch (NullPointerException e) 
 		{
-			return null  ;
+			throw new HotelReservationSystemException(ExceptionType.ENTERED_NULL,"Dates cannot be null");
 		}
 		return hotelPricesList;
+
 	}
 
 	//method to update the hotels along with the prices  
@@ -137,16 +150,24 @@ public class HotelReservationSystemService
 	//method to find best rated hotel for given date range
 	public HashMap<Integer, List<Entry<String, Integer>>> bestRatingHotel(String startDate,String endDate,String CoustomerType) 
 	{
-		HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate, CoustomerType);
-		HashMap<String, Integer> hotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
-		for (Hotel hotel : hotelsList) 
+		try 
 		{
-			hotelsWithBestRating.put(hotel.getHotelName(),hotel.getRating());
+			HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate, CoustomerType);
+			HashMap<String, Integer> hotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
+			for (Hotel hotel : hotelsList) 
+			{
+				hotelsWithBestRating.put(hotel.getHotelName(),hotel.getRating());
+			}
+			List<Entry<String, Integer>> maxRatedHotel = getBestRated(hotelsWithBestRating);
+			HashMap<Integer ,List<Entry<String, Integer>>> bestRatedHotels = new HashMap<Integer, List<Entry<String,Integer>>>();
+			bestRatedHotels.put(hotelPricesList.get(maxRatedHotel.get(0).getKey()), maxRatedHotel); //returning hash map of hotels having minimum price and same rating
+			return bestRatedHotels;
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Invalid dates");
+			return null;
 		}
-		List<Entry<String, Integer>> maxRatedHotel = getBestRated(hotelsWithBestRating);
-		HashMap<Integer ,List<Entry<String, Integer>>> bestRatedHotels = new HashMap<Integer, List<Entry<String,Integer>>>();
-		bestRatedHotels.put(hotelPricesList.get(maxRatedHotel.get(0).getKey()), maxRatedHotel); //returning hash map of hotels having minimum price and same rating
-		return bestRatedHotels;
 	}
 
 	//method to find highest rating among them

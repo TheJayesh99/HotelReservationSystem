@@ -66,7 +66,7 @@ public class HotelReservationSystemTesting
 	}
 
 	@Test
-	public void getCheapestHotel_WhenFridayAndSaturday_ShoudReturnLakewood()
+	public void getCheapestHotel_WhenFridayAndSaturday_ShoudReturnLakewoodAndBridgewood()
 	{
 		HotelReservationSystemService hotelService = new HotelReservationSystemService();
 		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
@@ -159,7 +159,24 @@ public class HotelReservationSystemTesting
 	}
 	
 	@Test
-	public void getBestRatedHotelForRewarded_WhenProperDates_ShouldReturnBridgewood()
+	public void getBestratingHotel_WhenNotProperDates_ShouldReturnNull() 
+	{
+		HotelReservationSystemService hotelService = new HotelReservationSystemService();
+		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+		Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 60, 50);
+		Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+		hotelService.addHotel(hotel1);
+		hotelService.addHotel(hotel2);
+		hotelService.addHotel(hotel3);
+		hotelService.ratingsOfHotel(hotel1, 3);
+		hotelService.ratingsOfHotel(hotel2, 4);
+		hotelService.ratingsOfHotel(hotel3, 5);
+		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.bestRatingHotel("2020-07-23","2021-07-24","regular");
+		assertEquals(null, hotels);
+	}
+	
+	@Test
+	public void getBestRatedHotelForRewarded_WhenProperDates_ShouldReturnRidgewood()
 	{
 		HotelReservationSystemService hotelService = new HotelReservationSystemService();
 		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
@@ -174,4 +191,6 @@ public class HotelReservationSystemTesting
 		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2021-07-23","2021-07-24","reward");
 		assertEquals("Ridgewood", hotels.get(140).get(0).getKey());
 	}
+	
+
 }
