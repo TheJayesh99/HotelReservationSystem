@@ -94,7 +94,7 @@ public class HotelReservationSystemService
 	{
 		try 
 		{
-			HashMap<String, Integer> cheapHotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
+			HashMap<String, Integer> hotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
 			List<Entry<String, Integer>> cheapHotels = findCheapestHotel(startDate, endDate);
 			for (Hotel hotel : hotelsList)
 			{
@@ -102,13 +102,12 @@ public class HotelReservationSystemService
 				{
 					if (cheapHotel.getKey().equals(hotel.getHotelName())) 
 					{
-						cheapHotelsWithBestRating.put(hotel.getHotelName(),hotel.getRating());
+						hotelsWithBestRating.put(hotel.getHotelName(),hotel.getRating());
 					}
 				}
 			}		
 			//calculating maximum rating
-			int maxRating = cheapHotelsWithBestRating.entrySet().stream().max((entry1,entry2) -> entry1.getValue().compareTo(entry2.getValue())).get().getValue();
-			List<Entry<String, Integer>> maxRatedHotel = cheapHotelsWithBestRating.entrySet().stream().filter(price -> price.getValue().equals(maxRating)).collect(Collectors.toList());
+			List<Entry<String, Integer>> maxRatedHotel = getBestRated(hotelsWithBestRating);
 			HashMap<Integer ,List<Entry<String, Integer>>> bestRatedHotels = new HashMap<Integer, List<Entry<String,Integer>>>();
 			bestRatedHotels.put(cheapHotels.get(0).getValue(), maxRatedHotel); //returning hash map of hotels having minimum price and same rating
 			return bestRatedHotels;
@@ -118,5 +117,28 @@ public class HotelReservationSystemService
 			System.out.println("Invalid dates");
 			return null;
 		}
+	}
+	
+	//method to find best rated hotel for given date range
+	public HashMap<Integer, List<Entry<String, Integer>>> bestRatingHotel(String startDate,String endDate) 
+	{
+		HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate);
+		HashMap<String, Integer> hotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
+		for (Hotel hotel : hotelsList) 
+		{
+			hotelsWithBestRating.put(hotel.getHotelName(),hotel.getRating());
+		}
+		List<Entry<String, Integer>> maxRatedHotel = getBestRated(hotelsWithBestRating);
+		HashMap<Integer ,List<Entry<String, Integer>>> bestRatedHotels = new HashMap<Integer, List<Entry<String,Integer>>>();
+		bestRatedHotels.put(hotelPricesList.get(maxRatedHotel.get(0).getKey()), maxRatedHotel); //returning hash map of hotels having minimum price and same rating
+		return bestRatedHotels;
+	}
+
+	//method to find highest rating among them
+	private List<Entry<String, Integer>> getBestRated(HashMap<String, Integer> hotelsWithBestRating)
+	{
+		int maxRating = hotelsWithBestRating.entrySet().stream().max((entry1,entry2) -> entry1.getValue().compareTo(entry2.getValue())).get().getValue();
+		List<Entry<String, Integer>> maxRatedHotel = hotelsWithBestRating.entrySet().stream().filter(price -> price.getValue().equals(maxRating)).collect(Collectors.toList());
+		return maxRatedHotel;
 	}
 }

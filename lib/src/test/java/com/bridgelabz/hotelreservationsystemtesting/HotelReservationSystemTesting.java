@@ -140,4 +140,21 @@ public class HotelReservationSystemTesting
 		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2020-07-23","20210-07-24");
 		assertEquals(null, hotels);
 	}
+	
+	@Test
+	public void getBestratingHotel_WhenProperDates_ShouldReturnRidgewood() 
+	{
+		HotelReservationSystemService hotelService = new HotelReservationSystemService();
+		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+		Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 60, 50);
+		Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+		hotelService.addHotel(hotel1);
+		hotelService.addHotel(hotel2);
+		hotelService.addHotel(hotel3);
+		hotelService.ratingsOfHotel(hotel1, 3);
+		hotelService.ratingsOfHotel(hotel2, 4);
+		hotelService.ratingsOfHotel(hotel3, 5);
+		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.bestRatingHotel("2021-07-23","2021-07-24");
+		assertEquals("Ridgewood", hotels.get(370).get(0).getKey());
+	}
 }
