@@ -18,9 +18,9 @@ public class HotelReservationSystemService
 	}
 
 	//method to find cheapest hotel available in given date range
-	public List<Entry<String, Integer>> findCheapestHotel(String startDate,String endDate) 
+	public List<Entry<String, Integer>> findCheapestHotel(String startDate,String endDate,String CoustomerType) 
 	{
-		HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate);
+		HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate, CoustomerType);
 		//finding the hotel with minimum price
 		try 
 		{
@@ -36,10 +36,10 @@ public class HotelReservationSystemService
 	}
 
 	//method to calculate hotels prices in given date range
-	private HashMap<String, Integer> calculateHotelPricesForDates(String startDate, String endDate) {
+	private HashMap<String, Integer> calculateHotelPricesForDates(String startDate, String endDate,String CoustomerType) 
+	{
 		LocalDate localStartDate = LocalDate.parse(startDate); 
 		LocalDate localEndDate = LocalDate.parse(endDate);
-
 		HashMap<String,Integer> hotelPricesList = new HashMap<>(); //making a price list to have mapping with price and hotels
 		if (localStartDate.compareTo(localEndDate) <= 0 && localStartDate.compareTo(LocalDate.now()) >= 0)
 		{
@@ -47,13 +47,28 @@ public class HotelReservationSystemService
 			{
 				for (Hotel hotel : hotelsList) 
 				{		
-					if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
+					if (CoustomerType.toLowerCase().equals("reward"))
 					{
-						setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRegular()); //for weekend we will update weekend price
+						if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
+						{
+							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRewards()); //for weekend we will update weekend price
+						}
+						else
+						{						
+							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRewards());  //for weekdays we will pass regular price 
+						}
 					}
 					else
-					{						
-						setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRegular());  //for weekdays we will pass regular price 
+					{
+						if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
+						{
+							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekendRatesForRegular()); //for weekend we will update weekend price
+						}
+						else
+						{						
+							setHotelsAndPrice(hotelPricesList, hotel, hotel.getWeekDaysRateForRegular());  //for weekdays we will pass regular price 
+						}
+
 					}
 
 				}
@@ -90,12 +105,12 @@ public class HotelReservationSystemService
 	}
 
 	//method to find Cheap Best Rating hotel
-	public HashMap<Integer, List<Entry<String, Integer>>> cheapestBestRatedHotel(String startDate, String endDate) 
+	public HashMap<Integer, List<Entry<String, Integer>>> cheapestBestRatedHotel(String startDate, String endDate,String CoustomerType) 
 	{
 		try 
 		{
 			HashMap<String, Integer> hotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
-			List<Entry<String, Integer>> cheapHotels = findCheapestHotel(startDate, endDate);
+			List<Entry<String, Integer>> cheapHotels = findCheapestHotel(startDate, endDate,CoustomerType);
 			for (Hotel hotel : hotelsList)
 			{
 				for (Entry<String, Integer> cheapHotel : cheapHotels)
@@ -118,11 +133,11 @@ public class HotelReservationSystemService
 			return null;
 		}
 	}
-	
+
 	//method to find best rated hotel for given date range
-	public HashMap<Integer, List<Entry<String, Integer>>> bestRatingHotel(String startDate,String endDate) 
+	public HashMap<Integer, List<Entry<String, Integer>>> bestRatingHotel(String startDate,String endDate,String CoustomerType) 
 	{
-		HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate);
+		HashMap<String, Integer> hotelPricesList = calculateHotelPricesForDates(startDate, endDate, CoustomerType);
 		HashMap<String, Integer> hotelsWithBestRating = new HashMap<String, Integer>(); //created list for hotels having minimum rating
 		for (Hotel hotel : hotelsList) 
 		{

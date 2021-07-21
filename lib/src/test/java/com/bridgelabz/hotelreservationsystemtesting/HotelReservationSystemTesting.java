@@ -36,7 +36,7 @@ public class HotelReservationSystemTesting
 		hotelService.addHotel(hotel1);
 		hotelService.addHotel(hotel2);
 		hotelService.addHotel(hotel3);
-		List<Entry<String, Integer>> cheapestHotel =  hotelService.findCheapestHotel("2021-07-23","2021-07-24");
+		List<Entry<String, Integer>> cheapestHotel =  hotelService.findCheapestHotel("2021-07-23","2021-07-24","regular");
 		assertEquals("Lakewood", cheapestHotel.get(0).getKey());
 	}
 
@@ -50,7 +50,7 @@ public class HotelReservationSystemTesting
 		hotelService.addHotel(hotel1);
 		hotelService.addHotel(hotel2);
 		hotelService.addHotel(hotel3);
-		assertEquals(null,hotelService.findCheapestHotel("2020-07-24","2020-07-25"));
+		assertEquals(null,hotelService.findCheapestHotel("2020-07-24","2020-07-25","regular"));
 	}
 	@Test
 	public void getWeekendrate_WhenBridgeWood_ShoudReturn60()
@@ -75,7 +75,7 @@ public class HotelReservationSystemTesting
 		hotelService.addHotel(hotel1);
 		hotelService.addHotel(hotel2);
 		hotelService.addHotel(hotel3);
-		List<Entry<String, Integer>> cheapestHotel =  hotelService.findCheapestHotel("2021-07-23","2021-07-24");
+		List<Entry<String, Integer>> cheapestHotel =  hotelService.findCheapestHotel("2021-07-23","2021-07-24","regular");
 		assertEquals("Bridgewood",cheapestHotel.get(0).getKey() );
 		assertEquals("Lakewood",cheapestHotel.get(1).getKey() );
 	}
@@ -120,7 +120,7 @@ public class HotelReservationSystemTesting
 		hotelService.ratingsOfHotel(hotel1, 3);
 		hotelService.ratingsOfHotel(hotel2, 4);
 		hotelService.ratingsOfHotel(hotel3, 5);
-		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2021-07-23","2021-07-24");
+		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2021-07-23","2021-07-24","regular");
 		assertEquals("Bridgewood", hotels.get(200).get(0).getKey());
 	}
 
@@ -137,7 +137,7 @@ public class HotelReservationSystemTesting
 		hotelService.ratingsOfHotel(hotel1, 3);
 		hotelService.ratingsOfHotel(hotel2, 4);
 		hotelService.ratingsOfHotel(hotel3, 5);
-		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2020-07-23","20210-07-24");
+		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2020-07-23","20210-07-24","regular");
 		assertEquals(null, hotels);
 	}
 	
@@ -154,7 +154,24 @@ public class HotelReservationSystemTesting
 		hotelService.ratingsOfHotel(hotel1, 3);
 		hotelService.ratingsOfHotel(hotel2, 4);
 		hotelService.ratingsOfHotel(hotel3, 5);
-		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.bestRatingHotel("2021-07-23","2021-07-24");
+		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.bestRatingHotel("2021-07-23","2021-07-24","regular");
 		assertEquals("Ridgewood", hotels.get(370).get(0).getKey());
+	}
+	
+	@Test
+	public void getBestRatedHotelForRewarded_WhenProperDates_ShouldReturnBridgewood()
+	{
+		HotelReservationSystemService hotelService = new HotelReservationSystemService();
+		Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+		Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 50, 50);
+		Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+		hotelService.addHotel(hotel1);
+		hotelService.addHotel(hotel2);
+		hotelService.addHotel(hotel3);
+		hotelService.ratingsOfHotel(hotel1, 3);
+		hotelService.ratingsOfHotel(hotel2, 4);
+		hotelService.ratingsOfHotel(hotel3, 5);
+		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2021-07-23","2021-07-24","reward");
+		assertEquals("Ridgewood", hotels.get(140).get(0).getKey());
 	}
 }
