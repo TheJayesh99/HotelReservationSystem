@@ -38,7 +38,7 @@ public class HotelReservationSystemService
 	}
 
 	//method to calculate hotels prices in given date range
-	private HashMap<String, Integer> calculateHotelPricesForDates(String startDate, String endDate,String CoustomerType) throws HotelReservationSystemException
+	public HashMap<String, Integer> calculateHotelPricesForDates(String startDate, String endDate,String CoustomerType) throws HotelReservationSystemException
 	{
 		HashMap<String,Integer> hotelPricesList = new HashMap<>(); //making a price list to have mapping with price and hotels
 		try {
@@ -53,7 +53,8 @@ public class HotelReservationSystemService
 				while(localStartDate.compareTo(localEndDate) <= 0)
 				{
 					for (Hotel hotel : hotelsList) 
-					{		
+					{	
+						try {
 						if (CoustomerType.toLowerCase().equals("reward"))
 						{
 							if (localStartDate.getDayOfWeek() == DayOfWeek.SUNDAY|| localStartDate.getDayOfWeek() == DayOfWeek.SATURDAY )  //condition to check weather its a  weekend
@@ -77,7 +78,11 @@ public class HotelReservationSystemService
 							}
 
 						}
-
+						}
+						catch (Exception e) 
+						{
+							throw new HotelReservationSystemException(ExceptionType.ENTERED_NULL,"Coustomer Type cannot be null");
+						}
 					}
 					localStartDate=localStartDate.plusDays(1); //incrementing the days
 				}

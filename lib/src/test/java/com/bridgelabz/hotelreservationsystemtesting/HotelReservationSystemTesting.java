@@ -9,7 +9,10 @@ import java.util.Map.Entry;
 import org.junit.Test;
 
 import com.bridgelabz.hotelreservationsystem.Hotel;
+import com.bridgelabz.hotelreservationsystem.HotelReservationSystemException;
+import com.bridgelabz.hotelreservationsystem.HotelReservationSystemException.ExceptionType;
 import com.bridgelabz.hotelreservationsystem.HotelReservationSystemService;
+
 
 public class HotelReservationSystemTesting 
 {
@@ -190,6 +193,75 @@ public class HotelReservationSystemTesting
 		hotelService.ratingsOfHotel(hotel3, 5);
 		HashMap<Integer, List<Entry<String, Integer>>> hotels = hotelService.cheapestBestRatedHotel("2021-07-23","2021-07-24","reward");
 		assertEquals("Ridgewood", hotels.get(140).get(0).getKey());
+	}
+	
+	@Test
+	public void getCheapestHotel_WhenDatesNull_ShouldReturnException() 
+	{
+		try 
+		{
+			HotelReservationSystemService hotelService = new HotelReservationSystemService();
+			Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+			Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 50, 50);
+			Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+			hotelService.addHotel(hotel1);
+			hotelService.addHotel(hotel2);
+			hotelService.addHotel(hotel3);
+			hotelService.ratingsOfHotel(hotel1, 3);
+			hotelService.ratingsOfHotel(hotel2, 4);
+			hotelService.ratingsOfHotel(hotel3, 5);
+			hotelService.calculateHotelPricesForDates(null, null, null);
+		}
+		catch (HotelReservationSystemException e) 
+		{
+			assertEquals(ExceptionType.ENTERED_NULL, e.type);
+		}
+	}
+
+	@Test
+	public void getCheapestHotel_WhenDatesEmpty_ShouldReturnException() 
+	{
+		try 
+		{
+			HotelReservationSystemService hotelService = new HotelReservationSystemService();
+			Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+			Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 50, 50);
+			Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+			hotelService.addHotel(hotel1);
+			hotelService.addHotel(hotel2);
+			hotelService.addHotel(hotel3);
+			hotelService.ratingsOfHotel(hotel1, 3);
+			hotelService.ratingsOfHotel(hotel2, 4);
+			hotelService.ratingsOfHotel(hotel3, 5);
+			hotelService.calculateHotelPricesForDates("", "", null);
+		}
+		catch (HotelReservationSystemException e) 
+		{
+			assertEquals(ExceptionType.ENTERED_EMPTY, e.type);
+		}
+	}
+
+	@Test
+	public void getCheapestHotel_WhenCoustomerNull_ShouldReturnException() 
+	{
+		try 
+		{
+			HotelReservationSystemService hotelService = new HotelReservationSystemService();
+			Hotel hotel1 = new Hotel("Lakewood",110 , 80, 90, 80);
+			Hotel hotel2 = new Hotel("Bridgewood",150 , 110, 50, 50);
+			Hotel hotel3 = new Hotel("Ridgewood",220 , 100, 150, 40);
+			hotelService.addHotel(hotel1);
+			hotelService.addHotel(hotel2);
+			hotelService.addHotel(hotel3);
+			hotelService.ratingsOfHotel(hotel1, 3);
+			hotelService.ratingsOfHotel(hotel2, 4);
+			hotelService.ratingsOfHotel(hotel3, 5);
+			hotelService.calculateHotelPricesForDates("2021-07-23","2021-07-24", null);
+		}
+		catch (HotelReservationSystemException e) 
+		{
+			assertEquals(ExceptionType.ENTERED_NULL, e.type);
+		}
 	}
 	
 
